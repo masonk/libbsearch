@@ -141,18 +141,19 @@ mod test_bsearch_first {
         let multiple = 1000;
         for w in 1..width {
             let mut vec = Vec::with_capacity(w * multiple);
-            for j in 0..multiple {
+            for j in 1..multiple {
                 for _ in 0..w {
                     vec.push(j);
                 }
             }
-            for j in 0..multiple {
-                let expected = j * w;
+            for j in 1..multiple {
+                let expected = (j - 1) * w;
                 match bsearch_first(&vec, |t| t.cmp(&j)) {
                     Some(actual) => { assert_eq!(actual, expected, "First idx of {} should be {}", j, expected); }
                     _ => { panic!("Didn't find first idx of {}, but there is such an idx ({})", j, expected); }
                 }
                 assert_eq!(bsearch_first(&vec, |t| t.cmp(&(multiple*2))), None);
+                assert_eq!(bsearch_first(&vec, |t| t.cmp(&0)), None);
             }
         }
     }
@@ -218,18 +219,19 @@ mod test_bsearch {
         let multiple = 1000;
         for w in 1..width {
             let mut vec = Vec::with_capacity(w * multiple);
-            for j in 0..multiple {
+            for j in 1..multiple {
                 for _ in 0..w {
                     vec.push(j);
                 }
             }
-            for j in 0..multiple {
-                let expected = (j * w)..(j * w + w);
+            for j in 1..multiple {
+                let expected = ((j-1) * w)..((j-1) * w + w);
                 match bsearch(&vec, |t| t.cmp(&j)) {
                     Some(actual) => { assert!(expected.contains(actual), "Return idx should be in {:?}, but got {}.", expected, actual); }
                     _ => { panic!("Didn't find any idx of {}, but there are such idxes ({:?}).", j, expected); }
                 }
                 assert_eq!(bsearch(&vec, |t| t.cmp(&(multiple*2))), None);
+                assert_eq!(bsearch(&vec, |t| t.cmp(&0)), None);
             }
         }
     }
