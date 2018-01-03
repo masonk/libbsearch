@@ -1,0 +1,4 @@
+[package]
+name = "bsearch"
+version = "1.0.0"   
+authors = ["mason.kramer@gmail.com"]
