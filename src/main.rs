@@ -62,8 +62,6 @@ where
     let mut start = 0;
     let mut end = slice.len();
     
-    let mut have_answer = false;
-    let mut answer : usize = 0;
     loop {
         if end < start {
             return None;
@@ -204,7 +202,7 @@ mod test_bsearch {
 
     #[test]
     fn big_test() {
-        let width = 5;
+        let width = 10;
         let multiple = 1000;
         for w in 1..width {
             let mut vec = Vec::with_capacity(w * multiple);
