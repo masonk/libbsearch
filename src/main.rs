@@ -1,15 +1,10 @@
 #![feature(range_contains)]
-// Find the idx of the first elem of range for which
-// test evaluates to true
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Less, Greater, Equal};
 
-// The first idx of an ordered array-like struct for which test(array[idx]) == true
-// array is a array of values that is sorted with respect to the ordering that orering() imposes on it.
-// All values in the array must be greater than or equal to all values that came before it in the array.
-
-// Returns None if there is no idx where ordering was Equal,
-// otherwise returns the idx of the first value for which ordering(array[idx]) was Equal
+// The least idx of a slice for which ordering(array[idx]) is Equal.
+// Slice must be sorted according to the order that ordering() imposes on it. This will not be checked.
+// Returns None if there is no idx where ordering was Equal.
 fn bsearch_first<T, F>(slice: &[T], ordering: F) -> Option<usize>
 where
     F: Fn(&T) -> Ordering,
@@ -31,11 +26,9 @@ where
         let ord = ordering(&slice[i]);
 
         match ord {
-            // the midpoint was Less than the sought value, so the answer, if any, lies between i - 1 and end
             Less => {
                 start = i + 1;
             }
-            // the midpoint was Equal to the sought value, so the answer lies between start and i
             Equal => {
                 have_answer = true;
                 answer = i;
@@ -44,7 +37,6 @@ where
                 }
                 end = i - 1;
             }
-            // the midpoint was Greater than the sought value, so the answer, if any, lies between start and i - 1
             Greater => {
                 if i == 0 {
                     return None;
@@ -54,7 +46,9 @@ where
         }
     }
 }
-
+// Some idx of a slice for which ordering(array[idx]) is Equal. Which one exactly is undefined.
+// slice must be sorted according to the order that ordering() imposes on it. This will not be checked.
+// Returns None if there is no idx where ordering was Equal.
 fn bsearch<T, F>(slice: &[T], ordering: F) -> Option<usize>
 where
     F: Fn(&T) -> Ordering,
@@ -71,15 +65,12 @@ where
         let ord = ordering(&slice[i]);
 
         match ord {
-            // the midpoint was Less than the sought value, so the answer, if any, lies between i - 1 and end
             Less => {
                 start = i + 1;
             }
-            // the midpoint was Equal to the sought value, so we're done
             Equal => {
                 return Some(i);
             }
-            // the midpoint was Greater to the sought value, so the answer, if any, lies between start and i - 1
             Greater => {
                 if i == 0 {
                     return None; // avoid integer underflow
