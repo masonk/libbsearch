@@ -9,9 +9,12 @@ fn bsearch_first<T, F>(slice: &[T], ordering: F) -> Option<usize>
 where
     F: Fn(&T) -> Ordering,
 {
+    let len = slice.len();
+    if len == 0 {
+        return None;
+    }
     let mut start = 0;
-    let mut end = slice.len();
-    
+    let mut end = len - 1;
     let mut have_answer = false;
     let mut answer : usize = 0;
     loop {
@@ -53,8 +56,12 @@ fn bsearch<T, F>(slice: &[T], ordering: F) -> Option<usize>
 where
     F: Fn(&T) -> Ordering,
 {
+    let len = slice.len();
+    if len == 0 {
+        return None;
+    }
     let mut start = 0;
-    let mut end = slice.len();
+    let mut end = len - 1;
     
     loop {
         if end < start {
@@ -121,10 +128,16 @@ mod test_bsearch_first {
         assert_eq!(idx, None);
     }
 
+    #[test]
+    fn none_for_empty() {
+        let vec : Vec<i32> = vec![];
+        let idx = bsearch_first(&vec, |t| t.cmp(&13));
+        assert_eq!(idx, None);
+    }
 
     #[test]
     fn big_test() {
-        let width = 5;
+        let width = 10;
         let multiple = 1000;
         for w in 1..width {
             let mut vec = Vec::with_capacity(w * multiple);
@@ -139,6 +152,7 @@ mod test_bsearch_first {
                     Some(actual) => { assert_eq!(actual, expected, "First idx of {} should be {}", j, expected); }
                     _ => { panic!("Didn't find first idx of {}, but there is such an idx ({})", j, expected); }
                 }
+                assert_eq!(bsearch_first(&vec, |t| t.cmp(&(multiple*2))), None);
             }
         }
     }
@@ -192,6 +206,13 @@ mod test_bsearch {
     }
 
     #[test]
+    fn none_for_empty() {
+        let vec : Vec<i32> = vec![];
+        let idx = bsearch(&vec, |t| t.cmp(&13));
+        assert_eq!(idx, None);
+    }
+
+    #[test]
     fn big_test() {
         let width = 10;
         let multiple = 1000;
@@ -208,6 +229,7 @@ mod test_bsearch {
                     Some(actual) => { assert!(expected.contains(actual), "Return idx should be in {:?}, but got {}.", expected, actual); }
                     _ => { panic!("Didn't find any idx of {}, but there are such idxes ({:?}).", j, expected); }
                 }
+                assert_eq!(bsearch(&vec, |t| t.cmp(&(multiple*2))), None);
             }
         }
     }
